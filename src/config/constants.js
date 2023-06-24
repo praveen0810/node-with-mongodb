@@ -16,7 +16,6 @@ export const RESPONSE_CODES = {
 export const Collection = {
     User: "users",
     UserPost: "userpost",
-    Demo: "demo",
     Likes: "likes",
     VerifyOtp: "verificationCode"
 
