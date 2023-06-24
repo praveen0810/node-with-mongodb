@@ -2,6 +2,7 @@ import { RESPONSE_CODES, Collection } from "../config/constants.js";
 import { insert, findOne } from '../modals/modal.js'
 import { ObjectId } from "mongodb";
 import moment from "moment";
+import { generateToken } from '../middlewares/auth.js'
 
 let current_timestamp = moment().format('MMMM Do YYYY, h:mm:ss')
 
@@ -75,6 +76,57 @@ const authController = {
                 msg: "Server Error"
             })
 
+        }
+    },
+    login: async (req, res) => {
+        try {
+            let response = {}
+            const data = req.body
+
+            let condition = { "$or": [{ email: data.email }] }
+            let loginUser = await findOne(Collection.User, condition)
+            if (loginUser) {
+                if (loginUser.password == data.password) {
+                    const user = {
+                        userId: loginUser._id,
+                        email: loginUser.email,
+                        name: loginUser.first_name + " " + loginUser.last_name
+                    }
+                    const token = generateToken(user)
+                    loginUser.token = token
+                    delete loginUser.password
+                    response = {
+                        status: 1,
+                        statusCode: RESPONSE_CODES.GET,
+                        msg: "Login Successfully",
+                        data: loginUser,
+
+                    }
+
+                }
+                else {
+                    response = {
+                        status: 1,
+                        statusCode: RESPONSE_CODES.NOT_FOUND,
+                        msg: " Invalid password "
+                    }
+                }
+            }
+            else {
+                response = {
+                    status: 1,
+                    statusCode: RESPONSE_CODES.NOT_FOUND,
+                    msg: " Invalid Username & Email "
+                }
+            }
+            res.status(response.statusCode).json(response);
+        } catch (error) {
+            console.log(error)
+            res.status(500).send({
+                status: 0,
+                statusCode: RESPONSE_CODES.ERROR,
+                msg: err
+            })
         }
     }
 }

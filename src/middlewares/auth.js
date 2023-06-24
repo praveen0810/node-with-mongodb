@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
  */
 
 const generateToken = (user) => {
-    return jwt.sign(user, process.JWT_SECRET_KEY, { expiresIn: '10h' });
+    return jwt.sign(user, process.env.JWT_SECRET_KEY, { expiresIn: '10h' });
 
 }
 const refreshToken = (user) => {
