@@ -1,14 +1,17 @@
-import express from 'express'
-import bodyParser from 'body-parser'//?body-parser is used in Node.js to parse the body of incoming HTTP requests, making it easier to access and process the data within your application.
-import dotenv from 'dotenv' //?This is used for import env file
-import helmet from 'helmet'//?helmet is a Node.js middleware that sets security-related HTTP headers to protect your web application from common vulnerabilities and attacks.
-import { connectDB } from '../src/config/db.js'
+import express from 'express';
+import bodyParser from 'body-parser';
+import 'dotenv/config'
+import routes from '../src/routes/index.js';
+import { connectDB } from '../src/config/db.js';
+import helmet from 'helmet';
 
-const app = express()
+
+
+const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(helmet())
-dotenv.config();
+
+app.use(helmet());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header(
@@ -23,11 +26,15 @@ app.use((req, res, next) => {
         return res.status(200).json({})
     }
     next()
-})
+});
 connectDB()
+app.use('/api_v_1', routes);
+
+
 
 const PORT = 8080;
 app.listen(PORT, () => {
-    console.log("Server is Running on 8080")
-})
+    console.log(`Server running on port ${PORT}`);
+});
+
 export default app;
