@@ -15,7 +15,7 @@ const connectDB = async () => {
         process.exit(1)
     }
 }
-function getDB() {
+async function getDB() {
     return client.db(dbName)
 }
 
