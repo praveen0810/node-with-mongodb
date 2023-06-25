@@ -4,6 +4,7 @@ import 'dotenv/config'
 import routes from '../src/routes/index.js';
 import { connectDB } from '../src/config/db.js';
 import helmet from 'helmet';
+import { authMiddleWare } from '../src/middlewares/authMiddleware.js';
 
 
 
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
     next()
 });
 connectDB()
+app.use(authMiddleWare);
 app.use('/api_v_1', routes);
 
 
